@@ -1,80 +1,160 @@
 import { FiBell,  FiUser } from 'react-icons/fi';
 import styles from './Profile.module.css';
+import { useNavigate } from "react-router-dom";
 
 import { useEffect, useState } from "react";
 
 
-export default function AddJobs(){
-  const [submitData, setSubmitData] = useState(null);
-  const BASE_URL = 'http://localhost:10000';
-  const [formData, setFormData] = useState({
-  companyName: "",
-  position: "",
-  category: "",
-  jobType: "",
-  vacancy: "",
-  experience: "",
-  postedDate: "",
-  lastDate: "",
-  salaryFrom: "",
-  salaryTo: "",
-  city: "",
-  state: "",
-  skills: "",
-  education: "",
-  description: "",
-  status: "Active",
-});
+export default function Profile(){
+    const navigate = useNavigate();
+  
+  const [form, setForm] = useState({
+    phone: "",
+    city: "",
+    state: "",
+    education: "",
+    experience: "",
+    skills: "",
+    profile_pic: null,
+    resume: null,
+  });
 
- function handleChange(e){
-   const {name,value} = e.target;
-  setFormData({
-    ...formData,
-    [name]:value
-  })
- }
+  async function getCSRFToken() {
 
- async function handleSubmit(e){
-  e.preventDefault();
-
-  const newJob ={
-    ...formData,
-    skills:formData.skills.split(","),
-   
-  }
-   setSubmitData(newJob);
+  await fetch(
+    "http://127.0.0.1:8000/app/csrf/",
+    {
+      credentials: "include",
+    }
+  );
 }
+function getCookie(name) {
+
+  let cookieValue = null;
+
+  if (document.cookie && document.cookie !== "") {
+
+    const cookies = document.cookie.split(";");
+
+    for (let cookie of cookies) {
+
+      cookie = cookie.trim();
+
+      if (cookie.startsWith(name + "=")) {
+
+        cookieValue = decodeURIComponent(
+          cookie.substring(name.length + 1)
+        );
+
+        break;
+      }
+    }
+  }
+
+  return cookieValue;
+}
+
+  // GET PROFILE
   useEffect(() => {
+    async function fetchProfile() {
 
-  if (!submitData) return;
-
-  async function addJob() {
-
-    try {
-
-      const res = await fetch(`${BASE_URL}/jobs`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(submitData),
-      });
+      const res = await fetch(
+        "http://127.0.0.1:8000/app/profile/",
+        {
+          credentials: "include"
+        }
+      );
 
       const data = await res.json();
 
-      console.log(data);
-
-      alert("Job Added Successfully");
-
-    } catch (err) {
-      console.log(err);
+      setForm((prev) => ({
+        ...prev,
+        ...data
+      }));
     }
 
+    fetchProfile();
+  }, []);
+
+  // TEXT INPUTS
+  function handleChange(e) {
+
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
   }
 
-  addJob();
+  // PROFILE PIC
+  function handleProfilePic(e) {
 
-}, [submitData]);
+    const file = e.target.files[0];
+
+    setForm({
+      ...form,
+      profile_pic: file
+    });
+  }
+
+  // RESUME
+  function handleResume(e) {
+
+    const file = e.target.files[0];
+
+    setForm({
+      ...form,
+      resume: file
+    });
+  }
+
+async function handleSubmit(e) {
+
+  e.preventDefault();
+
+  // GET CSRF COOKIE
+  await getCSRFToken();
+
+  const csrftoken = getCookie("csrftoken");
+
+  const formData = new FormData();
+
+  formData.append("phone", form.phone);
+  formData.append("city", form.city);
+  formData.append("state", form.state);
+  formData.append("education", form.education);
+  formData.append("experience", form.experience);
+  formData.append("skills", form.skills);
+
+  if (form.profile_pic) {
+    formData.append("profile_pic", form.profile_pic);
+  }
+
+  if (form.resume) {
+    formData.append("resume", form.resume);
+  }
+
+  const res = await fetch(
+    "http://127.0.0.1:8000/app/profile/update/",
+    {
+      method: "POST",
+      credentials: "include",
+
+      headers: {
+        "X-CSRFToken": csrftoken,
+      },
+
+      body: formData
+    }
+  );
+
+  const data = await res.json();
+
+  console.log(data);
+
+  alert(data.message);
+}
+
+  
   return(
     <div>
     
@@ -98,114 +178,52 @@ export default function AddJobs(){
       <div className={styles.formContainer}>
       <form onSubmit={handleSubmit}>
         <div className={styles.grid}>
-        
- {/* Row 3 */}
-        <div className={styles.formGroup}>
-          <label className={styles.label}>
-           Name <span className={styles.required}>*</span>
-          </label>
-          <input type="text"
-           name="Name" 
-          value={formData.companyName}
-          placeholder="Name" 
-          onChange={handleChange}
-          className={styles.inputField} />
-        </div>
-         {/* Row 3 */}
-        <div className={styles.formGroup}>
-          <label className={styles.label}>
-            Email<span className={styles.required}>*</span>
-          </label>
-          <input
-            type="text"
-            name="position"
-            placeholder="Email"
-            className={styles.inputField}
-            value={formData.email}
-            onChange={handleChange}
-          />
-        </div>
-        
-
-     
-
         <div className={styles.formGroup}>
           <label className={styles.label}>
           Phone <span className={styles.required}>*</span>
           </label>
            <input
-            type="number"
-            name="Phone"
-            placeholder="Phone"
-            className={styles.inputField}
-            value={formData.phone}
-            onChange={handleChange}
-          />
-        </div>
-         <div className={styles.formGroup}>
-                   <label className={styles.label}>
-                     Select Experience <span className={styles.required}>*</span>
-                   </label>
-                               <select
-                       name="experience"
-                       className={styles.selectField}
-                       value={formData.experience}
-                       onChange={handleChange}
-                     >
-                       <option value="">Choose...</option>
-                       <option value="6 mos">6 mos</option>
-                       <option value="1 yr">1 yr</option>
-                       <option value="2 yr">2 yr</option>
-                       <option value="3 yr">3 yr</option>
-                     </select>
-                 </div>
-                            {/* Password Field */}
-            <div className={styles.formGroup}>
-              <label className={styles.label}>
-                Password<span className={styles.required}>*</span>
-              </label>
-
-              <input
-                type="password"
-                name="password"
-                placeholder="Enter Password"
-                className={styles.inputField}
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            {/* Confirm Password Field */}
-            <div className={styles.formGroup}>
-              <label className={styles.label}>
-                Confirm Password<span className={styles.required}>*</span>
-              </label>
-
-              <input
-                type="password"
-                name="confirmPassword"
-                placeholder="Confirm Password"
-                className={styles.inputField}
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-              />
-            </div>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>
-            City Name <span className={styles.required}>*</span>
-          </label>
-
-          <input
             type="text"
-            name="city"
-            placeholder="Name"
             className={styles.inputField}
-            value={formData.city}
+            name="phone"
+            value={form.phone}
             onChange={handleChange}
+            placeholder="Phone"
+           
           />
         </div>
+
+         <div className={styles.formGroup}>
+          <label className={styles.label}>
+            Experience <span className={styles.required}>*</span>
+          </label>
+          <input
+             name="experience"
+            value={form.experience}
+            onChange={handleChange}
+            placeholder="Experience"
+            className={styles.inputField}
+            />
+        </div>
+            
+
+           
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+               City Name <span className={styles.required}>*</span>
+              </label>
+
+              <input
+                type="text"
+                name="city"
+                value={form.city}
+                onChange={handleChange}
+                placeholder="City"
+                className={styles.inputField}
+             
+              />
+            </div>
+        
 
         {/* Row 3 */}
         <div className={styles.formGroup}>
@@ -216,14 +234,29 @@ export default function AddJobs(){
           <input
             type="text"
             name="state"
-            placeholder="Name"
+            placeholder="State"
             className={styles.inputField}
-            value={formData.state}
+            value={form.state}
             onChange={handleChange}
           />
         </div>
 
+       
+         {/* Row 3 */}
         <div className={styles.formGroup}>
+          <label className={styles.label}>
+            Education Level<span className={styles.required}>*</span>
+          </label>
+          <input
+          type="text" 
+          placeholder="education" 
+          className={styles.inputField} 
+          value={form.education}
+          name="education"
+          onChange={handleChange}/>
+        </div>
+
+         <div className={styles.formGroup}>
           <label className={styles.label}>
             Skills
             <span className={styles.required}>
@@ -236,23 +269,11 @@ export default function AddJobs(){
             name="skills"
             placeholder="python,machine learning,mysql etc"
             className={styles.inputField}
-            value={formData.skills}
+            value={form.skills}
             onChange={handleChange}
           />
         </div>
-         {/* Row 3 */}
-        <div className={styles.formGroup}>
-          <label className={styles.label}>
-            Education Level<span className={styles.required}>*</span>
-          </label>
-          <input
-          type="text" 
-          placeholder="Education" 
-          className={styles.inputField} 
-          value={formData.education}
-          name="education"
-          onChange={handleChange}/>
-        </div>
+
         {/* Profile Picture Field */}
 <div className={styles.formGroup}>
   <label className={styles.label}>
@@ -261,11 +282,9 @@ export default function AddJobs(){
 
   <input
     type="file"
-    name="profilePic"
-    accept="image/*"
-    className={styles.inputField}
-    onChange={handleChange}
-    required
+     onChange={handleProfilePic}
+      className={styles.inputField}
+    
   />
 </div>
 
@@ -277,11 +296,8 @@ export default function AddJobs(){
 
   <input
     type="file"
-    name="cv"
-    accept=".pdf,.doc,.docx"
+    onChange={handleResume}
     className={styles.inputField}
-    onChange={handleChange}
-    required
   />
 </div>
 
@@ -290,27 +306,14 @@ export default function AddJobs(){
          
          <br></br>
 
-         <div className={styles.formGroup}>
-          <label className={styles.label}>
-            Description<span className={styles.required}>*</span>
-          </label>
-          <textarea
-          name="description"
-          placeholder="Enter full job description..."
-          className={styles.textArea}
-          value={formData.description}
-          onChange={handleChange}
-        />
-        </div>
-
-       
         
-
 
         <div className={styles.footerContainer}>
    
       <div className={styles.buttonRow}>
-        <button type="button" className={styles.closeBtn}>Close</button>
+        <button type="button" className={styles.closeBtn}
+        onClick={() => navigate("/")}
+        >Close</button>
         <button type="submit" className={styles.submitBtn}>Submit</button>
       </div>
     </div>

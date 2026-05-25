@@ -1,82 +1,125 @@
 import { useState } from "react";
+import styles from './Profile.module.css';
+import { useNavigate } from "react-router-dom";
 
-function Signup() {
+export default function Signup() {
+  const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({
-        username: "",
-        email: "",
-        password: ""
+  const [form, setForm] = useState({
+    username: "",
+    email: "",
+    password: ""
+  });
+
+  function handleChange(e) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
+
+  async function handleSubmit(e) {
+  e.preventDefault();
+
+  try {
+
+    const res = await fetch("http://127.0.0.1:8000/app/signup/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify(form)
     });
 
-    const handleChange = (e) => {
+    const data = await res.json();
 
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
+    console.log("SERVER RESPONSE:", data);
 
-    const handleSubmit = async (e) => {
+    if (res.ok) {
 
-        e.preventDefault();
+      alert(data.message || "Signup successful");
 
-        const response = await fetch(
-            "http://127.0.0.1:8000/app/signup/",
-            {
-                method: "POST",
+      navigate("/signin");
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+    } else {
 
-                credentials: "include",
+      alert(data.error || "Signup failed");
 
-                body: JSON.stringify(formData)
-            }
-        );
+    }
 
-        const data = await response.json();
+  } catch (error) {
 
-        alert(data.message || data.error);
-    };
+    console.log("ERROR:", error);
 
-    return (
-
-        <form onSubmit={handleSubmit}>
-
+    alert("Server error: " + error.message);
+  }
+}
+  return (
+     <div>
+        
+          {/* <main className={styles.mainContent } >
+   <div className={styles.formContainer}> */}
+          <main className={styles.formMain } >
+   <div className={styles.popup}>
+         <form onSubmit={handleSubmit}>
+           {/* <div className={styles.grid}> */}
+           <div className={styles.formGroup}>
+             <label className={styles.label}>
+             Username <span className={styles.required}>*</span>
+             </label>
             <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                onChange={handleChange}
+            type="text"
+              name="username"
+              placeholder="Username"
+              onChange={handleChange}
+              className={styles.inputField}
             />
+            </div>
+            {/* </div> */}
 
-            <br /><br />
+            <div className={styles.formGroup}>
+             <label className={styles.label}>
+             Email <span className={styles.required}>*</span>
+             </label>
 
-            <input
-                type="email"
+              <input
                 name="email"
                 placeholder="Email"
                 onChange={handleChange}
-            />
-
-            <br /><br />
+                className={styles.inputField}
+              />
+              </div>
+      <div className={styles.formGroup}>
+             <label className={styles.label}>
+            Password <span className={styles.required}>*</span>
+             </label>
 
             <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                onChange={handleChange}
+              name="password"
+              type="password"
+              placeholder="Password"
+              onChange={handleChange}
+              className={styles.inputField}
             />
+            </div>
 
-            <br /><br />
-
-            <button type="submit">
-                Signup
-            </button>
-
-        </form>
-    );
+      <br></br>
+      
+              
+      
+              <div className={styles.footerContainer}>
+         
+            <div className={styles.buttonRow}>
+              <button type="button" className={styles.closeBtn}
+              onClick={() => navigate("/signin")}
+              >Login</button>
+              <button type="submit" className={styles.submitBtn}>Signup</button>
+            </div>
+          </div>
+    
+     
+      
+    </form>
+    </div>
+    </main>
+    </div>
+  );
 }
-
-export default Signup;

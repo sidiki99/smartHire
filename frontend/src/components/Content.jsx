@@ -5,8 +5,7 @@ export default function Content() {
   return (
     <div  >
    
-      <Outlet  
-      />
+     <Outlet />
       <Footer/>
    
       

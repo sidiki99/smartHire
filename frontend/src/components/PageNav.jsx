@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import styles from "./PageNav.module.css"
 
-export default function PageNav({users}) {
+export default function PageNav() {
   return (
     <nav className={styles.sidebar}>
       <ul>
@@ -82,7 +82,6 @@ export default function PageNav({users}) {
             <span className={styles.arrow}>›</span>
           </Link>
         </li>
-        {!users && (
         <li>
           <Link to="/signup">
             <span className={styles.icon}>
@@ -92,7 +91,7 @@ export default function PageNav({users}) {
             <span className={styles.arrow}>›</span>
           </Link>
         </li>
-        )}
+   
       
           <li>
           <Link to="/signin">

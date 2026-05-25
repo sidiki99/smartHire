@@ -135,11 +135,15 @@ console.log(users);
         {users && (
   <div className={styles.topSection}>
 
-    <img
-      src="https://i.pravatar.cc/150?img=3"
-      alt="profile"
-      className={styles.avatar}
-    />
+<img
+  src={
+    users.profile_pic
+      ? `http://127.0.0.1:8000${users.profile_pic}`
+      : "https://i.pravatar.cc/150?img=3"
+  }
+  alt="profile"
+  className={styles.avatar}
+/>
 
     <div className={styles.info}>
 
@@ -147,8 +151,11 @@ console.log(users);
         {users.username}
       </h2>
 
-      <p className={styles.role}>
+      <p className={styles.name}>
         {users.email}
+      </p>
+      <p className={styles.name}>
+        {users.phone}
       </p>
 
       <button className={styles.updateBtn}>

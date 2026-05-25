@@ -102,6 +102,7 @@ export default function App(){
         />
         <Route path="AddJobs" element={<AddJobs/>} />
         <Route path="profile" element={<Profile />} />
+       
         <Route path="logout" element={<Logout />} />
          <Route path="login" element={<Login />} />
         <Route path="*" element={<PageNotFound />} />
@@ -111,8 +112,9 @@ export default function App(){
         <Route path="company" element={<CompanyForm      
         />} />
       </Route>
-      <Route path="signup" element={<Signup />} />
-      <Route path="signin" element={<Signin  />} />
+        <Route path="signup" element={<Signup />} />
+         <Route path="signin" element={<Signin  />} />
+     
      <Route path="pageNav" element={<PageNav users={users || null} />} />
 
     </Routes>

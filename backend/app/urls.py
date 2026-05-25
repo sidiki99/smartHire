@@ -11,9 +11,13 @@ from .views import (
         signup,
         login_view,
         logout_view,
-        current_user,csrf,
+        current_user,
+        get_profile,
+        update_profile,
+        
         apply_job,
-         get_resumes)
+         get_resumes,
+         get_csrf)
 
 urlpatterns = [
     path('', home),
@@ -24,15 +28,17 @@ urlpatterns = [
     path("get_category/",get_category),
     path("add_job/", add_job),
     path("get_job/", get_job),
-     path('signup/', signup),
+    
+    path("signup/", signup),
+    path("login/", login_view),
+    path("logout/", logout_view),
+    path("user/", current_user),
 
-    path('login/', login_view),
-
-    path('logout/', logout_view),
-
-    path('user/', current_user),
-    path("csrf/", csrf),
+    
     path("apply_job/", apply_job),
-      path("resumes/", get_resumes)
+      path("resumes/", get_resumes),
+       path("profile/", get_profile),
+    path("profile/update/", update_profile),
+    path("csrf/", get_csrf),
 ]
 

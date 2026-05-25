@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-import json
+
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
 from .models import Job, Category,Student, Company
@@ -15,94 +15,132 @@ from rest_framework.decorators import permission_classes
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
 
-@ensure_csrf_cookie
-def csrf(request):
-    return JsonResponse({"message": "CSRF cookie set"})
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def current_user(request):
-        if request.user.is_authenticated:
 
-          return Response({
-        "username": request.user.username,
-        "email": request.user.email
-    })
+# @csrf_exempt
+# def signup(request):
+#     if request.method == "POST":
+#         data = json.loads(request.body)
 
-@api_view(['GET', 'POST'])
+#         user = User.objects.create_user(
+#             username=data["username"],
+#             password=data["password"]
+#         )
+
+#         return JsonResponse({"message": "User created"})
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+
+@csrf_exempt
 def signup(request):
 
-    username = request.data.get("username")
-    email = request.data.get("email")
-    password = request.data.get("password")
+    if request.method != "POST":
+        return JsonResponse(
+            {"error": "Only POST allowed"},
+            status=400
+        )
 
-    if User.objects.filter(username=username).exists():
+    try:
+        data = json.loads(request.body)
 
-        return Response({
-            "error": "Username already exists"
+        username = data.get("username")
+        email = data.get("email")
+        password = data.get("password")
+
+        if not username or not email or not password:
+            return JsonResponse(
+                {"error": "All fields required"},
+                status=400
+            )
+
+        if User.objects.filter(username=username).exists():
+            return JsonResponse(
+                {"error": "Username already exists"},
+                status=400
+            )
+
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        return JsonResponse({
+            "message": "Signup successful",
+            "id": user.id
         })
 
-    # PASSWORD HASHING HAPPENS HERE
-    user = User.objects.create_user(
-        username=username,
-        email=email,
-        password=password
-    )
-
-    return Response({
-        "message": "Account created successfully"
-    })
-
-# =========================
-# LOGIN PAGE
-# =========================
-
-
-from django.contrib.auth import login
-
-
-@api_view(['GET', 'POST'])
-
-def login_view(request):
-
-    username = request.data.get("username")
-    password = request.data.get("password")
-
-    user = authenticate(
-        username=username,
-        password=password
-    )
+    except Exception as e:
+        return JsonResponse({
+            "error": str(e)
+        }, status=500)
     
+@csrf_exempt
+def login_view(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
 
-    if user is not None:
+        user = authenticate(
+            username=data["username"],
+            password=data["password"]
+        )
 
-        login(request, user)
+        if user:
+            login(request, user)
+            return JsonResponse({"message": "Login success"})
+        return JsonResponse({"error": "Invalid credentials"}, status=400)
 
-        return Response({
-            "message": "Login successful"
+
+def logout_view(request):
+    logout(request)
+    return JsonResponse({"message": "Logged out"})
+
+
+# def current_user(request):
+#     if request.user.is_authenticated:
+        
+#         profile = request.user.profile
+#         return JsonResponse({
+#             "username": request.user.username,
+#             "id": request.user.id,
+#             "email": request.user.email,
+#              "phone": profile.phone,
+#              "profile_pic": profile.profile_pic
+#         })
+#     return JsonResponse({"user": None}, status=401) 
+#////////////////////
+from django.http import JsonResponse
+from .models import Profile
+
+def current_user(request):
+
+    if request.user.is_authenticated:
+
+        profile, created = Profile.objects.get_or_create(
+            user=request.user
+        )
+
+        return JsonResponse({
+            "username": request.user.username,
+            "id": request.user.id,
+            "email": request.user.email,
+            "phone": profile.phone,
+
+            "profile_pic": (
+                profile.profile_pic.url
+                if profile.profile_pic
+                else None
+            )
         })
 
-    return Response({
-        "error": "Invalid credentials"
-    })
-
-
-# =========================
-# LOGOUT PAGE
-# =========================
-
-
-
-@api_view(['POST'])
-def logout_view(request):
-
-    logout(request)
-
-    return Response({
-        "message": "Logged out successfully"
-    })
-
+    return JsonResponse({
+        "user": None
+    }, status=401)
 # =========================
 # HOME PAGE
 # =========================
@@ -360,3 +398,109 @@ def get_resumes(request):
             "title": r.title
         } for r in resumes
     ])
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import Profile,Resume
+
+# GET profile
+def get_profile(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Not logged in"}, status=401)
+
+    profile = request.user.profile
+
+    return JsonResponse({
+        "phone": profile.phone,
+        "city": profile.city,
+        "state": profile.state,
+        "education": profile.education,
+        "experience": profile.experience,
+        "skills": profile.skills,
+    })
+
+
+# # UPDATE profile
+# @csrf_exempt
+# def update_profile(request):
+#     if request.method == "POST":
+#         if not request.user.is_authenticated:
+#             return JsonResponse({"error": "Not logged in"}, status=401)
+
+#         data = json.loads(request.body)
+#         profile = request.user.profile
+
+#         profile.phone = data.get("phone", "")
+#         profile.city = data.get("city", "")
+#         profile.state = data.get("state", "")
+#         profile.education = data.get("education", "")
+#         profile.experience = data.get("experience", "")
+#         profile.skills = data.get("skills", "")
+
+#         # PROFILE PIC
+#         if request.FILES.get("profile_pic"):
+#             profile.profile_pic = request.FILES.get("profile_pic")
+
+#         profile.save()
+
+#         # RESUME
+#         if request.FILES.get("resume"):
+
+#             Resume.objects.create(
+#                 user=request.user,
+#                 title="My Resume",
+#                 file=request.FILES.get("resume")
+#             )
+
+        
+#         return JsonResponse({"message": "Profile updated"})
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
+
+@ensure_csrf_cookie
+def get_csrf(request):
+    return JsonResponse({
+        "message": "CSRF cookie set"
+    })
+
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from .models import Profile, Resume
+@login_required
+def update_profile(request):
+
+    if request.method == "POST":
+
+        profile, created = Profile.objects.get_or_create(
+            user=request.user
+        )
+
+        profile.phone = request.POST.get("phone")
+        profile.city = request.POST.get("city")
+        profile.state = request.POST.get("state")
+        profile.education = request.POST.get("education")
+        profile.experience = request.POST.get("experience")
+        profile.skills = request.POST.get("skills")
+
+        if request.FILES.get("profile_pic"):
+            profile.profile_pic = request.FILES.get("profile_pic")
+
+        profile.save()
+
+        if request.FILES.get("resume"):
+
+            Resume.objects.create(
+                user=request.user,
+                title="My Resume",
+                file=request.FILES.get("resume")
+            )
+
+        return JsonResponse({
+            "message": "Profile updated successfully"
+        })
+
+    return JsonResponse({
+        "error": "Invalid request"
+    }, status=400)

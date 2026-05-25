@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { FiBell, FiUser } from 'react-icons/fi';
+import styles from './AddJobs.module.css';
+import { useNavigate } from "react-router-dom";
 
 function CompanyForm() {
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     company_name: "",
@@ -71,70 +75,144 @@ function CompanyForm() {
 };
   return (
     <div>
+    
+          <main className={styles.mainContent}>
+    
+            {/* Header */}
+            <header className={styles.topHeader}>
+              <div className={styles.headerLeft}>
+                <h2>Add Company</h2>
+              </div>
+    
+              <div className={styles.headerRight}>
+                <FiBell className={styles.icon} />
+                <div className={styles.profile}>
+                  <FiUser className={styles.icon} />
+                  <span>Profile</span>
+                </div>
+              </div>
+            </header>
+    
+    <div>
 
-      <h2>Add Company</h2>
+       <div className={styles.formContainer}>
+        <form onSubmit={handleSubmit}>
+          <div className={styles.grid}>
 
-      <form onSubmit={handleSubmit}>
-
+  
+        <div className={styles.formGroup}>
+        <label>Company Name 
+          <span className={styles.required}>*</span>
+        </label>
+        
         <input
           type="text"
           name="company_name"
           placeholder="Company Name"
           onChange={handleChange}
+          className={styles.inputField}
         />
-        <br /><br />
+        </div>
+     <div className={styles.formGroup}>
+        <label>Logo
+          <span className={styles.required}>*</span>
+        </label>
 
         <input
           type="file"
           name="logo"
           onChange={handleChange}
+          className={styles.inputField}
         />
-        <br /><br />
+        </div>
+
+        <div className={styles.formGroup}>
+        <label>Website 
+          <span className={styles.required}>*</span>
+        </label>
 
         <input
           type="text"
           name="website"
           placeholder="Website"
           onChange={handleChange}
+          className={styles.inputField}
         />
-        <br /><br />
+      </div>
+
+      <div className={styles.formGroup}>
+        <label>Email 
+          <span className={styles.required}>*</span>
+        </label>
 
         <input
           type="email"
           name="email"
           placeholder="Email"
           onChange={handleChange}
+          className={styles.inputField}
         />
-        <br /><br />
+        </div>
+
+        <div className={styles.formGroup}>
+        <label>Phone
+          <span className={styles.required}>*</span>
+        </label>
 
         <input
           type="text"
           name="phone"
           placeholder="Phone"
           onChange={handleChange}
+          className={styles.inputField}
         />
-        <br /><br />
+       </div>
+       <div className={styles.formGroup}>
+        <label>Address
+          <span className={styles.required}>*</span>
+        </label>
+       
+   
 
-        <textarea
+        <input
           name="address"
           placeholder="Address"
           onChange={handleChange}
+          className={styles.inputField}
         />
+        </div>
+        </div>
         <br /><br />
+
+        <div className={styles.formGroup}>
+        <label>Description
+          <span className={styles.required}>*</span>
+        </label>
+        
 
         <textarea
           name="description"
           placeholder="Description"
           onChange={handleChange}
+           className={styles.textArea}
         />
-        <br /><br />
-
-        <button type="submit">
-          Save
-        </button>
-
+        </div>
+        
+        <div className={styles.footerContainer}>
+           
+              <div className={styles.buttonRow}>
+                <button type="button" className={styles.closeBtn}
+                onClick={() => navigate("/")}
+                >Close</button>
+                <button type="submit" className={styles.submitBtn}>Submit</button>
+              </div>
+            </div>
+     
       </form>
+      </div>
 
+    </div>
+    </main>
     </div>
   );
 }
