@@ -1,0 +1,258 @@
+.container {
+  /* background-color:#17171E; */
+  color: #ffffff;
+  padding: 40px;
+  font-family: 'Inter', sans-serif;
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 24px;
+  min-height: 100vh;
+}
+
+/* Stats Grid Left Side */
+.statsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: #252538;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.statCard {
+  padding: 30px;
+  border-bottom: 1px solid #33334d;
+  position: relative;
+}
+
+.statCard:nth-child(odd) {
+  border-right: 1px solid #33334d;
+}
+
+.statCard:nth-last-child(-n+2) {
+  border-bottom: none;
+}
+
+.statHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.statValue {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  background: rgba(0, 255, 0, 0.1);
+  color: #4caf50;
+}
+
+.badgeNegative {
+  background: rgba(255, 0, 0, 0.1);
+  color: #ff5252;
+}
+
+.statLabel {
+  color: #a0a0b0;
+  font-size: 14px;
+}
+
+/* Profile Card Right Side */
+.profileCard {
+  background-color: #252538;
+  border-radius: 16px;
+  padding: 30px;
+}
+
+.profileHeader {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+  align-items: flex-start;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.name {
+  font-size: 24px;
+  margin: 0;
+}
+
+.role {
+  color: #ff5e3a;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.location {
+  font-size: 13px;
+  color: #a0a0b0;
+}
+
+.updateBtn {
+  background-color: #ff5e3a;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+/* Skills Section */
+.skillsSection {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.skillList {
+  flex: 1;
+}
+
+.skillItem {
+  margin-bottom: 20px;
+}
+
+.skillInfo {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.progressBar {
+  height: 8px;
+  background: #33334d;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 4px;
+}
+
+/* Donut Chart Placeholder */
+.chartContainer {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 15px solid #3d5afe;
+  border-left-color: #f50057;
+  border-top-color: #d500f9;
+  margin-left: 20px;
+}
+
+
+.p_container {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+
+}
+
+/* MAIN CARD */
+.profileCard {
+  display: flex;
+  flex-direction: column; /* 👈 important change */
+  gap: 25px;
+  background: #1c1d2e;
+  padding: 30px;
+  border-radius: 20px;
+  width: 900px;
+  color: white;
+}
+
+/* TOP SECTION (was left + right split, now combined layout control) */
+.topSection {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* AVATAR */
+.avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 15px;
+  object-fit: cover;
+}
+
+/* INFO */
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.name {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.role {
+  color: #ff4d2e;
+  font-weight: 500;
+}
+
+.location {
+  opacity: 0.8;
+}
+
+.updateBtn {
+  margin-top: 10px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  background: #ff3d00;
+  color: white;
+  cursor: pointer;
+}
+
+/* SKILLS BELOW (no right sidebar anymore) */
+.skillsSection {
+  margin-top: 10px;
+}
+
+.title {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.skillsList {
+  display: flex;
+  flex-direction:column;
+  gap: 15px;
+  width: 100%;
+}
+
+.skillRow {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.bar {
+  height: 8px;
+  background: #2a2b40;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: #4c6fff;
+  border-radius: 10px;
+}

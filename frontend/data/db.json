@@ -1,0 +1,165 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Franklin Jr",
+      "role": "UI / UX Designer",
+      "location": "Medan, Sumatera Utara - ID",
+      "skills": [
+        "Figma",
+        "Adobe XD",
+        "Wireframing",
+        "User Research",
+        "Prototyping"
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "companyName": "Google",
+      "position": "FullStack Developer",
+      "category": "Developer",
+      "jobType": "Full Time",
+      "vacancy": "5",
+      "experience": "1 yr",
+      "postedDate": "2026-05-10",
+      "lastDate": "2026-05-31",
+      "salaryFrom": "3000",
+      "salaryTo": "3500",
+      "city": "Georgia",
+      "state": "USA",
+      "skills": [
+        "html",
+        "css",
+        "bootstrap",
+        "tailwind css",
+        " react js",
+        "next js"
+      ],
+      "education": "BS",
+      "description": "We will give value to your dedication ,honesty and consistency",
+      "status": "Active",
+      "id": 1
+    },
+    {
+      "companyName": "Amazon",
+      "position": "Backend Developer",
+      "category": "Developer",
+      "jobType": "Freelancer",
+      "vacancy": "3",
+      "experience": "2 yr",
+      "postedDate": "2026-05-10",
+      "lastDate": "2026-05-20",
+      "salaryFrom": "3500",
+      "salaryTo": "4500",
+      "city": "Washington",
+      "state": "USA",
+      "skills": [
+        "Node js ",
+        "Express ",
+        "Mongo",
+        "REST API"
+      ],
+      "education": "16",
+      "description": "Mention or follow:\n\nModular code (controllers, routes, services)",
+      "status": "Active",
+      "id": 2
+    },
+    {
+      "companyName": "Amazon",
+      "position": "Backend Developer",
+      "category": "Developer",
+      "jobType": "Freelancer",
+      "vacancy": "3",
+      "experience": "2 yr",
+      "postedDate": "2026-05-10",
+      "lastDate": "2026-05-20",
+      "salaryFrom": "3500",
+      "salaryTo": "4500",
+      "city": "Washington",
+      "state": "USA",
+      "skills": [
+        "Python ",
+        "Django ",
+        "REST API"
+      ],
+      "education": "16",
+      "description": "Mention or follow:\nModular code (controllers, routes, services)",
+      "status": "Active",
+      "id": 3
+    },
+    {
+      "companyName": "sidiki softs",
+      "position": "UI/UX Desighner",
+      "category": "Developer",
+      "jobType": "Part Time",
+      "vacancy": "8",
+      "experience": "6 mos",
+      "postedDate": "2026-05-10",
+      "lastDate": "2026-05-10",
+      "salaryFrom": "3000",
+      "salaryTo": "3500",
+      "city": "Georgia",
+      "state": "USA",
+      "skills": [
+        "h"
+      ],
+      "education": "",
+      "description": "",
+      "status": "Active",
+      "id": 4
+    },
+    {
+      "companyName": "sidiki softs",
+      "position": "Software Engineer Intern",
+      "category": "Developer",
+      "jobType": "Part Time",
+      "vacancy": "3",
+      "experience": "6 mos",
+      "postedDate": "2026-05-21",
+      "lastDate": "2026-05-22",
+      "salaryFrom": "4000",
+      "salaryTo": "6000",
+      "city": "Lodhran",
+      "state": "USA",
+      "skills": [
+        "hrml",
+        "css",
+        "bootstrap",
+        "tailwind css",
+        " react js",
+        "next js"
+      ],
+      "education": "16",
+      "description": "dedicated people needed",
+      "status": "Active",
+      "id": 5
+    },
+    {
+      "companyName": "Amazon",
+      "position": "FullStack Developer",
+      "category": "IT Manager",
+      "jobType": "Freelancer",
+      "vacancy": "7",
+      "experience": "1 yr",
+      "postedDate": "2026-05-10",
+      "lastDate": "2026-05-29",
+      "salaryFrom": "6700",
+      "salaryTo": "7000",
+      "city": "Georgia",
+      "state": "USA",
+      "skills": [
+        "hrml",
+        "css",
+        "bootstrap",
+        "tailwind css",
+        " react js",
+        "next js"
+      ],
+      "education": "16",
+      "description": "hi",
+      "status": "Active",
+      "id": 6
+    }
+  ]
+}

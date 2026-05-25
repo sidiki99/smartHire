@@ -1,0 +1,154 @@
+.mainContent {
+  flex: 1;
+  margin-left: 0px;
+  padding: 24px 32px;
+
+  /* background-color: #0f0f14; */
+ 
+}
+
+/* Top Header */
+.topHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.headerLeft h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.icon {
+  font-size: 20px;
+  color: #cbd5e1;
+  cursor: pointer;
+}
+
+.menuIcon {
+  font-size: 24px;
+  color: #cbd5e1;
+  cursor: pointer;
+}
+
+/* Profile Button */
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #17171E;
+  padding: 8px 16px;
+  border-radius: 40px;
+  cursor: pointer;
+  border: 1px solid #2a2a3a;
+  color: white;
+}
+
+.container {
+  display: flex;
+    flex-wrap: wrap;  
+  gap: 20px;
+  padding: 20px;
+
+
+}
+
+.card {
+  width: calc(50% - 10px); /* 2 cards per row */
+  background-color: #1f1f33;
+  border-radius: 12px;
+  padding: 24px;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+   display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.infoGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  color: #a0a0b0;
+  font-size: 14px;
+}
+
+.infoItem {
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #d1d1e0;
+  margin: 10px 0;
+  border-bottom: 1px solid #33334d;
+  padding-bottom: 20px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.postedBy {
+  font-size: 12px;
+}
+
+.postedLabel {
+  color: #D43109;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.adminInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.applyBtn {
+  background-color: #D43109;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.2s;
+}
+
+.applyBtn:hover {
+  opacity: 0.9;
+}
+

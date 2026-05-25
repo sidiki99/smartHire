@@ -1,0 +1,321 @@
+.mainContent {
+  flex: 1;
+  margin-left: 0px;
+  padding: 24px 32px;
+  /* background-color: #0f0f14; */
+ 
+}
+
+/* Top Header */
+.topHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.headerLeft h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.icon {
+  font-size: 20px;
+  color: #cbd5e1;
+  cursor: pointer;
+}
+
+.menuIcon {
+  font-size: 24px;
+  color: #cbd5e1;
+  cursor: pointer;
+}
+
+/* Profile Button */
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #17171E;
+  padding: 8px 16px;
+  border-radius: 40px;
+  cursor: pointer;
+  border: 1px solid #2a2a3a;
+  color: white;
+}
+.formContainer {
+  background-color:#1E1E2F;
+  padding: 40px;
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+}
+.formMain {
+  background: rgba(0, 0, 0, 0.3);
+
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  padding-top: 90px;
+
+  z-index: 2000;
+}
+.popup {
+  background-color: #252538;
+
+  width: 600px;
+  max-width: 90%;
+
+  padding: 20px;
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  max-height: 80vh;
+  overflow-y: auto;
+
+  box-sizing: border-box;
+}
+* {
+  box-sizing: border-box;
+}
+.popup {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.form{
+  width: 100%;
+   display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  gap: 24px;
+}
+.a_grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.required {
+  color: #ff5e3a;
+  margin-left: 4px;
+}
+
+.inputField, .selectField {
+  background-color: #252538;
+  border: 2px solid #33334d;
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: #ffffff;
+  font-size: 14px;
+  outline: none;
+   color-scheme: dark;
+  transition: border-color 0.2s;
+}
+
+/* Specific style for the focused input in your image */
+.inputFieldActive {
+  border: 2px solid #ff5e3a;
+  box-shadow: 0 0 0 1px #ff5e3a;
+}
+
+.inputField:focus, .selectField:focus {
+  border-color: #ff5e3a;
+}
+
+/* Customizing the date icon and dropdown arrow color */
+.inputField::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+.selectField {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 16px) center;
+}
+
+/* Focus state (orange glow like your screenshot) */
+.inputField:focus {
+  border-color: #ff3b1f;
+  box-shadow: 0 0 0 2px rgba(255, 59, 31, 0.2);
+}
+
+/* Date icon color (for Chrome) */
+.inputField::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+/* Optional: hover effect */
+.inputField:hover {
+  border-color: #3a3a45;
+}
+.textArea {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;         /* user can expand */
+  
+
+
+ 
+
+  box-sizing: border-box;
+
+  background-color: #252538;
+  border: 2px solid #33334d;
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: #ffffff;
+  font-size: 14px;
+  outline: none;
+   color-scheme: dark;
+  transition: border-color 0.2s;
+}
+.textArea:focus{
+  border-color: #ff3b1f;
+  box-shadow: 0 0 0 2px rgba(255, 59, 31, 0.2);
+}
+.textFormGroup{
+  width: 100%;
+}
+
+
+
+.footerContainer {
+  background-color: #1E1E2F;
+  padding: 24px;
+  border-top: 1px solid #33334d;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Radio Group Styling */
+.statusGroup {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.radioInput {
+  display: none; /* Hide default */
+}
+
+/* Custom Radio Circle */
+.customRadio {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #33334d;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+/* The dot inside */
+.customRadio::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: none;
+}
+
+/* Active State with Glow */
+.radioInput:checked + .customRadio {
+  border-color: #FF5E3A;
+  background-color: #FF5E3A;
+  box-shadow: 0 0 10px rgba(255, 94, 58, 0.6);
+}
+
+.radioInput:checked + .customRadio::after {
+  display: block;
+}
+
+/* Action Buttons */
+.buttonRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.closeBtn {
+  background-color: #2d2433; /* Dark reddish tint */
+  color: #ff4d4d;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submitBtn {
+  background-color: #FF5E3A;
+  color: #ffffff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(255, 94, 58, 0.2);
+}
+
+.applyForm{
+  width: 60%;
+
+}
+.top{
+  display: flex;
+  justify-content: space-between;
+    border-bottom: 1px solid #33334d;
+    margin-bottom: 30px;
+}

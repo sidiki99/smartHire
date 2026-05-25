@@ -1,0 +1,178 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.applications {
+  min-height: 100vh;
+
+  padding: 25px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* TOP BAR */
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+}
+
+.statusButtons {
+  display: flex;
+  gap: 10px;
+  background: #191a2e;
+  padding: 8px;
+  border-radius: 14px;
+}
+
+.statusButtons button {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 16px 26px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 17px;
+  transition: 0.3s;
+}
+
+.statusButtons button:hover {
+  background: #ff4d15;
+}
+
+.statusButtons .active {
+  background: #ff4d15;
+}
+
+/* SORT */
+
+.sortSelect {
+  background: #191a2e;
+  border: 1px solid #2b2d4b;
+  color: white;
+  padding: 18px 25px;
+  border-radius: 14px;
+  font-size: 18px;
+  outline: none;
+}
+
+/* TABLE */
+
+.tableContainer {
+  background: #1E1E2F;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #1d1f35;
+}
+
+thead th {
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  text-align: left;
+  padding: 28px 20px;
+}
+
+tbody tr {
+  border-top: 1px solid #2b2d4b;
+  transition: 0.3s;
+}
+
+tbody tr:hover {
+  background: #20223b;
+}
+
+tbody td {
+  color: #d1d1d1;
+  padding: 24px 20px;
+  font-size: 18px;
+}
+
+/* CHECKBOX */
+
+.checkBox {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 2px solid #2d3157;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.activeCheck {
+  background: #ff4d15;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* ORDER ID */
+
+.orderId {
+  font-weight: bold;
+  color: white;
+}
+
+/* COMPANY */
+
+.companyInfo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.companyLogo {
+  width: 55px;
+  height: 55px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #8b5cf6, #d946ef);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.companyInfo span {
+  color: white;
+  font-size: 20px;
+}
+
+/* TYPE */
+
+.jobType {
+  color: white;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* CONTACT */
+
+.contact {
+  color: #00b894;
+  font-weight: 500;
+}
+
+/* EMPTY */
+
+.emptyBox {
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}

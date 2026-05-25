@@ -1,0 +1,66 @@
+
+ 
+
+
+/* REMOVE DEFAULT LIST STYLE */
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* EACH ITEM */
+.sidebar li {
+  margin-bottom: 10px;
+}
+
+/* LINK STYLE */
+.sidebar a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+  color: #cbd5e1;
+  padding: 12px 15px;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+/* LEFT ICON + TEXT GROUP */
+.sidebar a span:first-child {
+  margin-right: 12px;
+}
+
+/* ICON STYLE */
+.icon {
+  font-size: 18px;
+}
+
+/* TEXT */
+.sidebar a span:nth-child(2) {
+  flex: 1;
+  margin-left: 10px;
+}
+
+/* RIGHT ARROW */
+.arrow {
+  font-size: 18px;
+  color: #94a3b8;
+}
+
+/* HOVER EFFECT */
+.sidebar a:hover {
+  background:#FF5E3A;
+  color: white;
+}
+
+/* ACTIVE LOOK (optional) */
+.sidebar a.active {
+  background: #2a2a40;
+  color: white;
+}
+.icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
