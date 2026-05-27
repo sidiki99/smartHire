@@ -20,6 +20,55 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+# for resume analysis
+import pdfplumber
+import re
+
+from .models import (
+    Job,
+    JobApplication,
+    Resume
+)
+
+def extract_text_from_pdf(file):
+
+    text = ""
+
+    with pdfplumber.open(file) as pdf:
+
+        for page in pdf.pages:
+
+            text += page.extract_text() or ""
+
+    return text.lower()
+
+def calculate_skill_match(job_skills, resume_text):
+
+    matched_skills = []
+
+    for skill in job_skills:
+
+        skill = skill.lower().strip()
+
+        pattern = r"\b" + re.escape(skill) + r"\b"
+
+        if re.search(pattern, resume_text):
+
+            matched_skills.append(skill)
+
+    total_required = len(job_skills)
+
+    if total_required == 0:
+        return 0, matched_skills
+
+    percentage = (
+        len(matched_skills) / total_required
+    ) * 100
+
+    return percentage, matched_skills
+
+
+#_____________________
 
 
 # @csrf_exempt
@@ -333,7 +382,13 @@ def add_job(request):
             salaryTo=data.get("salaryTo"),
             city=data.get("city"),
             state=data.get("state"),
-            skills=data.get("skills"),
+            # skills=data.get("skills"),
+            skills=[
+                    skill.strip().lower()
+                    for skill in data.get("skills", "").split(",")
+                    if skill.strip()
+                ],
+
             education=data.get("education"),
             description=data.get("description"),
             status=data.get("status")
@@ -396,6 +451,93 @@ from .models import (
 )
 
 
+# @csrf_exempt
+# @login_required
+# def apply_job(request):
+
+#     if request.method != "POST":
+
+#         return JsonResponse({
+#             "error": "POST request required"
+#         }, status=400)
+
+#     try:
+
+#         job_id = request.POST.get("job_id")
+
+#         cover_letter = request.POST.get(
+#             "cover_letter"
+#         )
+
+#         uploaded_resume = request.FILES.get(
+#             "resume"
+#         )
+
+#         job = Job.objects.get(id=job_id)
+
+#         # CHECK ALREADY APPLIED
+#         already_applied = JobApplication.objects.filter(
+#             user=request.user,
+#             job=job
+#         ).exists()
+
+#         if already_applied:
+
+#             return JsonResponse({
+#                 "error": "Already applied"
+#             }, status=400)
+
+#         # GET SAVED RESUME
+#         latest_resume = Resume.objects.filter(
+#             user=request.user
+#         ).last()
+
+#         # USER UPLOADED NEW RESUME
+#         if uploaded_resume:
+
+#             latest_resume = Resume.objects.create(
+#                 user=request.user,
+#                 title=f"{request.user.username} Resume",
+#                 file=uploaded_resume
+#             )
+
+#         # NO RESUME FOUND
+#         if not latest_resume:
+
+#             return JsonResponse({
+#                 "error": "Please upload resume first"
+#             }, status=400)
+
+#         # CREATE APPLICATION
+#         application = JobApplication.objects.create(
+#             user=request.user,
+#             job=job,
+#             resume=latest_resume,
+#             cover_letter=cover_letter
+#         )
+
+#         return JsonResponse({
+#             "message": "Application submitted",
+#             "application_id": application.id
+#         })
+
+#     except Job.DoesNotExist:
+
+#         return JsonResponse({
+#             "error": "Job not found"
+#         }, status=404)
+
+#     except Exception as e:
+
+#         return JsonResponse({
+#             "error": str(e)
+#         }, status=500)
+#       ###apply job
+
+
+# -----------------------------------
+# APPLY JOB
+# -----------------------------------
 @csrf_exempt
 @login_required
 def apply_job(request):
@@ -418,9 +560,12 @@ def apply_job(request):
             "resume"
         )
 
+        # GET JOB
         job = Job.objects.get(id=job_id)
 
+        # -----------------------------------
         # CHECK ALREADY APPLIED
+        # -----------------------------------
         already_applied = JobApplication.objects.filter(
             user=request.user,
             job=job
@@ -432,13 +577,24 @@ def apply_job(request):
                 "error": "Already applied"
             }, status=400)
 
+        # -----------------------------------
         # GET SAVED RESUME
+        # -----------------------------------
         latest_resume = Resume.objects.filter(
             user=request.user
         ).last()
 
+        # -----------------------------------
         # USER UPLOADED NEW RESUME
+        # -----------------------------------
         if uploaded_resume:
+
+            # PDF VALIDATION
+            if not uploaded_resume.name.endswith(".pdf"):
+
+                return JsonResponse({
+                    "error": "Only PDF resumes allowed"
+                }, status=400)
 
             latest_resume = Resume.objects.create(
                 user=request.user,
@@ -446,14 +602,50 @@ def apply_job(request):
                 file=uploaded_resume
             )
 
+        # -----------------------------------
         # NO RESUME FOUND
+        # -----------------------------------
         if not latest_resume:
 
             return JsonResponse({
                 "error": "Please upload resume first"
             }, status=400)
 
+        # -----------------------------------
+        # EXTRACT RESUME TEXT
+        # -----------------------------------
+        resume_text = extract_text_from_pdf(
+            latest_resume.file
+        )
+
+        # -----------------------------------
+        # REQUIRED JOB SKILLS
+        # -----------------------------------
+        job_skills = job.skills
+
+        # -----------------------------------
+        # SKILL MATCH
+        # -----------------------------------
+        percentage, matched_skills = calculate_skill_match(
+            job_skills,
+            resume_text
+        )
+
+        # -----------------------------------
+        # CHECK 75%
+        # -----------------------------------
+        if percentage < 75:
+
+            return JsonResponse({
+                "error": "Skill match below 75% , So you are not eligible to apply this job",
+                "match_percentage": percentage,
+                "matched_skills": matched_skills,
+                "required_skills": job_skills,
+            }, status=400)
+
+        # -----------------------------------
         # CREATE APPLICATION
+        # -----------------------------------
         application = JobApplication.objects.create(
             user=request.user,
             job=job,
@@ -463,7 +655,9 @@ def apply_job(request):
 
         return JsonResponse({
             "message": "Application submitted",
-            "application_id": application.id
+            "application_id": application.id,
+            "match_percentage": percentage,
+            "matched_skills": matched_skills
         })
 
     except Job.DoesNotExist:
@@ -477,7 +671,6 @@ def apply_job(request):
         return JsonResponse({
             "error": str(e)
         }, status=500)
-      ###apply job
 
 
 # from rest_framework.decorators import api_view, parser_classes
