@@ -14,9 +14,48 @@ import { FiBell,
 
 //import PropTypes from "prop-types";
 
-export default function Jobs({jobs,isLoading,setOpenPopup,setSelectedJob}) {
+export default function Jobs({jobs,isLoading,setOpenPopup,setSelectedJob,setJobs}) {
   
   if(isLoading) return <Spinner />
+
+  const handleDelete = async (id) => {
+
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this job?"
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+
+    const res = await fetch(
+      `http://127.0.0.1:8000/app/delete_job/${id}/`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (res.ok) {
+
+      // REMOVE FROM UI
+      setJobs((prevJobs) =>
+        prevJobs.filter((job) => job.id !== id)
+      );
+
+      alert("Job deleted successfully");
+
+    } else {
+
+      alert("Failed to delete");
+
+    }
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+};
    
   return (
     
@@ -35,47 +74,7 @@ export default function Jobs({jobs,isLoading,setOpenPopup,setSelectedJob}) {
                
              </div>
           </header>
-
-         
-
-
-
-    {/* <div className={styles.container}>
-      {jobs.map((job) => (
-        <div key={job.id} className={styles.card}>
-          <h2 className={styles.title}>{job.title}</h2>
-          
-          <div className={styles.infoGrid}>
-            <div className={styles.infoItem}>🏢 {job.company}</div>
-            <div className={styles.infoItem}>📍 {job.location}</div>
-            <div className={styles.infoItem}>💰 {job.salary}</div>
-            <div className={styles.infoItem}>🕒 {job.type}</div>
-            <div className={styles.infoItem}>💼 {job.exp}</div>
-          </div>
-
-          <p className={styles.description}>{job.desc}</p>
-
-          <div className={styles.footer}>
-            <div className={styles.postedBy}>
-              <span className={styles.postedLabel}>📝 Posted by</span>
-              {job.posted}
-            </div>
-            
-            <div className={styles.adminInfo}>
-              👤 HR/Admin
-            </div>
-
-            <button className={styles.applyBtn}>
-              ✅ Apply Now
-            </button>
-          </div>
-        </div>
-      ))}
-    </div> */}
-
-
-
-                <div className={styles.container}>
+            <div className={styles.container}>
                   {jobs.map((job) => (
                     <div key={job.id} className={styles.card}>
 
@@ -139,6 +138,12 @@ export default function Jobs({jobs,isLoading,setOpenPopup,setSelectedJob}) {
                   </div>
 
                   <div className={styles.footer}>
+                     <button
+                        className={styles.delBtn}
+                        onClick={() => handleDelete(job.id)}
+                      >
+                        Delete Job
+                      </button>
                     <button className={styles.applyBtn} type="submit" onClick={() =>{ setOpenPopup(true) , setSelectedJob(job)}}
                     
                     >

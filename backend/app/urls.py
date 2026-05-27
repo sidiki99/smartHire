@@ -17,7 +17,11 @@ from .views import (
         
         apply_job,
          get_resumes,
-         get_csrf)
+         get_csrf,
+         job_applications,
+         get_jobs,
+         delete_application,
+         delete_job)
 
 urlpatterns = [
     path('', home),
@@ -35,10 +39,17 @@ urlpatterns = [
     path("user/", current_user),
 
     
-    path("apply_job/", apply_job),
+    path("apply-job/", apply_job),
       path("resumes/", get_resumes),
        path("profile/", get_profile),
     path("profile/update/", update_profile),
     path("csrf/", get_csrf),
+       path("applications_view/", job_applications),
+           path("get_jobs/", get_jobs),
+           path("delete_application/<int:app_id>/", delete_application),
+            path(
+            "delete_job/<int:job_id>/",
+            delete_job
+    ),
 ]
 

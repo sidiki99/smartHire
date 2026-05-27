@@ -114,8 +114,11 @@ def logout_view(request):
 #         })
 #     return JsonResponse({"user": None}, status=401) 
 #////////////////////
+
+
 from django.http import JsonResponse
-from .models import Profile
+from .models import Profile, Resume
+
 
 def current_user(request):
 
@@ -125,23 +128,39 @@ def current_user(request):
             user=request.user
         )
 
+        # GET LATEST RESUME
+        resume = Resume.objects.filter(
+            user=request.user
+        ).last()
+
         return JsonResponse({
+
             "username": request.user.username,
+
             "id": request.user.id,
+
             "email": request.user.email,
+
             "phone": profile.phone,
 
             "profile_pic": (
                 profile.profile_pic.url
                 if profile.profile_pic
                 else None
+            ),
+
+            # SEND RESUME URL
+            "resume": (
+                resume.file.url
+                if resume
+                else None
             )
+
         })
 
     return JsonResponse({
         "user": None
     }, status=401)
-# =========================
 # HOME PAGE
 # =========================
 
@@ -333,60 +352,185 @@ def add_job(request):
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
-    
+
+        ## get job
+from django.http import JsonResponse
+from .models import Job
+
+def get_jobs(request):
+    jobs = Job.objects.select_related("companyName", "category").all()
+
+    data = []
+    for job in jobs:
+        data.append({
+            "id": job.id,
+            "company": job.companyName.company_name,  # adjust field if different
+            "position": job.position,
+            "category": job.category.name,  # adjust if needed
+            "jobType": job.jobType,
+            "vacancy": job.vacancy,
+            "experience": job.experience,
+            "postedDate": job.postedDate,
+            "lastDate": job.lastDate,
+            "salaryFrom": job.salaryFrom,
+            "salaryTo": job.salaryTo,
+            "city": job.city,
+            "state": job.state,
+            "skills": job.skills,
+            "education": job.education,
+            "description": job.description,
+            "status": job.status,
+        })
+
+    return JsonResponse(data, safe=False)
+      ### apply job
+      # views.py
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+
+from .models import (
+    Job,
+    JobApplication,
+    Resume
+)
 
 
-from rest_framework.decorators import api_view, parser_classes
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.response import Response
-from .models import JobApplication, Resume, Job
-from django.contrib.auth.models import User
-
-@api_view(["POST"])
-@parser_classes([MultiPartParser, FormParser])
+@csrf_exempt
+@login_required
 def apply_job(request):
 
-    user = request.user  # must be logged in
+    if request.method != "POST":
 
-    job_id = request.data.get("job")
-    resume_id = request.data.get("resume")
-    cover_letter = request.data.get("cover_letter")
+        return JsonResponse({
+            "error": "POST request required"
+        }, status=400)
 
-    job = Job.objects.get(id=job_id)
+    try:
 
-    # get selected resume
-    resume = Resume.objects.get(id=resume_id)
+        job_id = request.POST.get("job_id")
 
-    # create application
-    app = JobApplication.objects.create(
-        user=user,
-        job=job,
-        resume=resume,
-        cover_letter=cover_letter
-    )
+        cover_letter = request.POST.get(
+            "cover_letter"
+        )
 
-    return Response({
-        "message": "Application submitted successfully",
-        "application_id": app.id
-    })
+        uploaded_resume = request.FILES.get(
+            "resume"
+        )
+
+        job = Job.objects.get(id=job_id)
+
+        # CHECK ALREADY APPLIED
+        already_applied = JobApplication.objects.filter(
+            user=request.user,
+            job=job
+        ).exists()
+
+        if already_applied:
+
+            return JsonResponse({
+                "error": "Already applied"
+            }, status=400)
+
+        # GET SAVED RESUME
+        latest_resume = Resume.objects.filter(
+            user=request.user
+        ).last()
+
+        # USER UPLOADED NEW RESUME
+        if uploaded_resume:
+
+            latest_resume = Resume.objects.create(
+                user=request.user,
+                title=f"{request.user.username} Resume",
+                file=uploaded_resume
+            )
+
+        # NO RESUME FOUND
+        if not latest_resume:
+
+            return JsonResponse({
+                "error": "Please upload resume first"
+            }, status=400)
+
+        # CREATE APPLICATION
+        application = JobApplication.objects.create(
+            user=request.user,
+            job=job,
+            resume=latest_resume,
+            cover_letter=cover_letter
+        )
+
+        return JsonResponse({
+            "message": "Application submitted",
+            "application_id": application.id
+        })
+
+    except Job.DoesNotExist:
+
+        return JsonResponse({
+            "error": "Job not found"
+        }, status=404)
+
+    except Exception as e:
+
+        return JsonResponse({
+            "error": str(e)
+        }, status=500)
+      ###apply job
+
+
+# from rest_framework.decorators import api_view, parser_classes
+# from rest_framework.parsers import MultiPartParser, FormParser
+# from rest_framework.response import Response
+# from .models import JobApplication, Resume, Job
+# from django.contrib.auth.models import User
+
+# @api_view(["POST"])
+# @parser_classes([MultiPartParser, FormParser])
+# def apply_job(request):
+
+#     user = request.user  # must be logged in
+
+#     job_id = request.data.get("job")
+#     resume_id = request.data.get("resume")
+#     cover_letter = request.data.get("cover_letter")
+
+#     job = Job.objects.get(id=job_id)
+
+#     # get selected resume
+#     resume = Resume.objects.get(id=resume_id)
+
+#     # create application
+#     app = JobApplication.objects.create(
+#         user=user,
+#         job=job,
+#         resume=resume,
+#         cover_letter=cover_letter
+#     )
+
+#     return Response({
+#         "message": "Application submitted successfully",
+#         "application_id": app.id
+#     })
 
 
 
-@api_view(["POST"])
-@parser_classes([MultiPartParser, FormParser])
-def upload_resume(request):
-    user = request.user
+# @api_view(["POST"])
+# @parser_classes([MultiPartParser, FormParser])
+# def upload_resume(request):
+#     user = request.user
 
-    file = request.FILES.get("file")
-    title = request.data.get("title")
+#     file = request.FILES.get("file")
+#     title = request.data.get("title")
 
-    resume = Resume.objects.create(
-        user=user,
-        title=title,
-        file=file
-    )
+#     resume = Resume.objects.create(
+#         user=user,
+#         title=title,
+#         file=file
+#     )
 
-    return Response({"id": resume.id, "title": resume.title})
+#     return Response({"id": resume.id, "title": resume.title})
 
 @api_view(["GET"])
 def get_resumes(request):
@@ -489,13 +633,28 @@ def update_profile(request):
 
         profile.save()
 
-        if request.FILES.get("resume"):
+        # if request.FILES.get("resume"):
 
-            Resume.objects.create(
-                user=request.user,
-                title="My Resume",
-                file=request.FILES.get("resume")
-            )
+        #     Resume.objects.create(
+        #         user=request.user,
+        #         title="My Resume",
+        #         file=request.FILES.get("resume")
+        #     )
+
+         # RESUME
+    if request.FILES.get("resume"):
+
+        # DELETE OLD RESUME
+        Resume.objects.filter(
+            user=request.user
+        ).delete()
+
+        # CREATE NEW RESUME
+        Resume.objects.create(
+            user=request.user,
+            title="My Resume",
+            file=request.FILES.get("resume")
+        )
 
         return JsonResponse({
             "message": "Profile updated successfully"
@@ -504,3 +663,75 @@ def update_profile(request):
     return JsonResponse({
         "error": "Invalid request"
     }, status=400)
+
+
+
+    # applications
+    # 
+def job_applications(request):
+    applications = JobApplication.objects.select_related("job", "user").all().order_by("-applied_at")
+
+    data = []
+
+    for app in applications:
+        data.append({
+            "id": app.id,
+            "status": app.status,
+            "applied_at": app.applied_at,
+
+            # JOB INFO (FIXED)
+            "jobPosition": app.job.position,
+            "company": app.job.companyName.company_name,
+            "location": app.job.state
+
+        })
+
+    return JsonResponse(data, safe=False)
+
+
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import JobApplication
+
+@csrf_exempt
+def delete_application(request, app_id):
+    if request.method != "DELETE":
+        return JsonResponse({"error": "DELETE request required"}, status=400)
+
+    try:
+        application = JobApplication.objects.get(id=app_id)
+        application.delete()
+
+        return JsonResponse({"message": "Application deleted successfully"})
+    
+    except JobApplication.DoesNotExist:
+        return JsonResponse({"error": "Not found"}, status=404)
+
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from .models import Job
+
+
+@csrf_exempt
+@require_http_methods(["DELETE"])
+def delete_job(request, job_id):
+
+    try:
+        job = Job.objects.get(id=job_id)
+
+        # DELETE FROM DATABASE
+        job.delete()
+
+        return JsonResponse({
+            "message": "Job deleted successfully"
+        })
+
+    except Job.DoesNotExist:
+        return JsonResponse({
+            "error": "Job not found"
+        }, status=404)        

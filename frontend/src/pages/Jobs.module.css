@@ -163,6 +163,16 @@
 .applyBtn:active {
   transform: scale(0.98);
 }
+.delBtn {
+  background-color: #2d2433; /* Dark reddish tint */
+  color: #ff4d4d;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 10px;
+}
 
 /* Responsive */
 @media (max-width: 768px) {

@@ -194,7 +194,7 @@ function CompanyForm() {
           name="description"
           placeholder="Description"
           onChange={handleChange}
-           className={styles.textArea}
+          className={styles.textArea}
         />
         </div>
         

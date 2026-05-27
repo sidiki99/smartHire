@@ -81,7 +81,8 @@ export default function App(){
     <ApplyJob 
     setOpenPopup={setOpenPopup}
      selectedJob={selectedJob}
-      currentUser={currentUser} />
+      currentUser={currentUser}
+      users={users} />
   )}
     <Routes>
       <Route path="/" element={<AppNav />}>
@@ -97,6 +98,7 @@ export default function App(){
               isLoading={isLoading}
               setOpenPopup={setOpenPopup}
               setSelectedJob={setSelectedJob}
+              setJobs={setJobs}
             />
           }
         />

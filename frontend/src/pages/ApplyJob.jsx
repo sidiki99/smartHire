@@ -1,6 +1,8 @@
-import styles from './ApplyJob.module.css';
+import styles from "./ApplyJob.module.css";
+
 import { useState } from "react";
-import { 
+
+import {
   FiBriefcase,
   FiClock,
   FiUsers,
@@ -9,26 +11,23 @@ import {
   FiMapPin,
   FiBookOpen,
   FiCalendar,
-    } from 'react-icons/fi';
+} from "react-icons/fi";
 
 export default function ApplyJob({
   setOpenPopup,
   selectedJob,
-  currentUser,
+  users
 }) {
 
-  // FORM STATE
+  const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({
-    name: currentUser?.name || "",
-    email: currentUser?.email || "",
-    position: selectedJob?.position || "",
-    phone: "",
-    description: "",
-    resume: "",
+    cover_letter: "",
+    resume: null,
   });
 
-  // HANDLE INPUT CHANGE
   function handleChange(e) {
+
     const { name, value } = e.target;
 
     setFormData({
@@ -37,160 +36,80 @@ export default function ApplyJob({
     });
   }
 
-  // HANDLE FILE
-
   function handleFileChange(e) {
 
-      const file = e.target.files[0];
-
-      if (file) {
-        setFormData({
-          ...formData,
-          resume: file,
-        });
-      }
+    setFormData({
+      ...formData,
+      resume: e.target.files[0],
+    });
   }
 
-//   // SUBMIT FORM
-//   function handleSubmitForm(e) {
-//     e.preventDefault();
+  async function handleSubmitForm(e) {
 
-//     // GET OLD APPLICATIONS
-//     // const oldApplications =
-//     //   JSON.parse(localStorage.getItem("applications")) || [];
+    e.preventDefault();
 
-//     // // CHECK ALREADY APPLIED
-//     // const alreadyApplied = oldApplications.find(
-//     //   (item) =>
-//     //     item.jobId === selectedJob.id &&
-//     //     item.userId === currentUser.id
-//     // );
+  
+    setLoading(true);
 
-//     const oldApplications =
-//   JSON.parse(localStorage.getItem("applications")) || [];
+    const form = new FormData();
 
-// const alreadyApplied =
-//   currentUser?.id && selectedJob?.id
-//     ? oldApplications.some(
-//         (item) =>
-//           item.jobId === selectedJob.id &&
-//           item.userId === currentUser.id
-//       )
-//     : false;
-    
-//     if (alreadyApplied) {
-//       alert("You already applied for this job");
-//       return;
-//     }
+    form.append("job_id", selectedJob.id);
 
-//     // NEW APPLICATION OBJECT
-//     const applicationData = {
-//       applicationId: Date.now(),
-
-//       userId: currentUser.id,
-//       userName: formData.name,
-
-//       jobId: selectedJob.id,
-//       jobTitle: selectedJob.position,
-//       companyName : selectedJob.companyName,
-//       location: selectedJob.state,
-
-//       email: formData.email,
-//       phone: formData.phone,
-//       description: formData.description,
-
-//       resume: formData.resume,
-
-//       status: "Pending",
-
-//       appliedAt: new Date().toLocaleDateString(),
-//     };
-
-//     // PUSH NEW DATA
-//     oldApplications.push(applicationData);
-
-//     // SAVE IN LOCAL STORAGE
-//     localStorage.setItem(
-//       "applications",
-//       JSON.stringify(oldApplications)
-//     );
-
-//     alert("Application Submitted");
-
-//     setOpenPopup(false);
-
-//     console.log(applicationData);
-//   }
-
-//  const oldApplications =
-//   JSON.parse(localStorage.getItem("applications")) || [];
-
-// const alreadyApplied =
-//   currentUser?.id && selectedJob?.id
-//     ? oldApplications.some(
-//         (item) =>
-//           item.jobId === selectedJob.id &&
-//           item.userId === currentUser.id
-//       )
-//     : false;
-
-
-async function handleSubmitForm(e) {
-
-  e.preventDefault();
-
-  const form = new FormData();
-
-  form.append("user_id", currentUser.id);
-
-  form.append("job_id", selectedJob.id);
-
-  form.append("title", `${currentUser.name} Resume`);
-
-  form.append("cover_letter", formData.description);
-
-  form.append("resume", formData.resume);
-
-  try {
-
-    const response = await fetch(
-      "http://127.0.0.1:8000/app/apply-job/",
-      {
-        method: "POST",
-
-        body: form,
-
-        credentials: "include",
-      }
+    form.append(
+      "cover_letter",
+      formData.cover_letter
     );
 
-    const data = await response.json();
+    if (formData.resume) {
 
-    if (response.ok) {
+        form.append(
+          "resume",
+          formData.resume
+        );
+      }
 
-      alert("Application Submitted");
+    try {
 
-      setOpenPopup(false);
+      const response = await fetch(
+        "http://127.0.0.1:8000/app/apply-job/",
+        {
+          method: "POST",
 
-      console.log(data);
+          credentials: "include",
 
-    } else {
+          body: form,
+        }
+      );
 
-      alert(data.message || data.error);
+      const data = await response.json();
 
+      if (response.ok) {
+
+        alert("Application Submitted");
+
+        console.log(data);
+
+        setOpenPopup(false);
+
+      } else {
+
+        alert(data.error || "Something went wrong");
+      }
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert("Server error");
     }
 
-  } catch (error) {
-
-    console.log(error);
-
-    alert("Something went wrong");
-
+    setLoading(false);
   }
-}
 
   return (
+
     <div className={styles.formMain}>
+
       <div className={styles.popup}>
 
         <form
@@ -199,11 +118,10 @@ async function handleSubmitForm(e) {
         >
 
           <div className={styles.top}>
-            <h2 style={{ color: "#D43109" }}>
-              Apply Job as
-            </h2>
 
-            <h2 style={{ color: "#ffff" }}>{selectedJob?.position}</h2>
+            <h2 style={{ color: "#fff" }}>
+              Apply for {selectedJob?.position}
+            </h2>
 
             <span
               className={styles.closeBtn}
@@ -211,150 +129,170 @@ async function handleSubmitForm(e) {
             >
               ✕
             </span>
+
           </div>
 
+          {/* JOB INFO */}
+
           <div className={styles.infoGrid}>
-                        
-                        <div className={styles.infoItem}>
-                          <FiBriefcase /> {selectedJob.companyName}
-                        </div>
 
-                        <div className={styles.infoItem}>
-                          <FiClock /> {selectedJob.jobType}
-                        </div>
+            <div className={styles.infoItem}>
+              <FiBriefcase />
+              {selectedJob.companyName}
+            </div>
 
-                        <div className={styles.infoItem}>
-                          <FiUsers /> {selectedJob.vacancy} vcnc/vcncies
-                        </div>
+            <div className={styles.infoItem}>
+              <FiClock />
+              {selectedJob.jobType}
+            </div>
 
-                        <div className={styles.infoItem}>
-                          <FiTrendingUp /> {selectedJob.experience} Exp.
-                        </div>
+            <div className={styles.infoItem}>
+              <FiUsers />
+              {selectedJob.vacancy} Vacancies
+            </div>
 
-                        <div className={styles.infoItem}>
-                          <FiDollarSign /> {selectedJob.salaryFrom}$ - {selectedJob.salaryTo}$
-                        </div>
+            <div className={styles.infoItem}>
+              <FiTrendingUp />
+              {selectedJob.experience} Exp.
+            </div>
 
-                        <div className={styles.infoItem}>
-                          <FiMapPin /> {selectedJob.city} in {selectedJob.state}
-                        </div>
+            <div className={styles.infoItem}>
+              <FiDollarSign />
+              {selectedJob.salaryFrom}$ -
+              {selectedJob.salaryTo}$
+            </div>
 
-                        <div className={styles.infoItem}>
-                          <FiBookOpen /> {selectedJob.education} Edu.
-                        </div>
+            <div className={styles.infoItem}>
+              <FiMapPin />
+              {selectedJob.city},
+              {selectedJob.state}
+            </div>
 
-                        <div className={styles.infoItem}>
-                          <FiCalendar /> Strt: {selectedJob.postedDate}
-                        </div>
+            <div className={styles.infoItem}>
+              <FiBookOpen />
+              {selectedJob.education}
+            </div>
 
-                        <div className={styles.infoItem}>
-                          <FiCalendar /> End: {selectedJob.lastDate}
-                        </div>
+            <div className={styles.infoItem}>
+              <FiCalendar />
+              Start: {selectedJob.postedDate}
+            </div>
 
-                      </div>
+            <div className={styles.infoItem}>
+              <FiCalendar />
+              End: {selectedJob.lastDate}
+            </div>
+
+          </div>
+
+          <br />
+
+          {/* USER INFO */}
 
           <div className={styles.a_grid}>
 
-            {/* NAME */}
             <div className={styles.formGroup}>
+
               <label className={styles.label}>
-                Name <span className={styles.required}>*</span>
+                Applicant Name
               </label>
 
               <input
                 type="text"
-                name="name"
-                value={formData.name}
-                // onChange={handleChange}
+                value={users?.username || ""}
+                readOnly
                 className={styles.inputField}
               />
+
             </div>
 
-            {/* EMAIL */}
             <div className={styles.formGroup}>
-              <label className={styles.label}>
-                Email <span className={styles.required}>*</span>
-              </label>
 
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className={styles.inputField}
-              />
-            </div>
-
-            {/* POSITION */}
-            <div className={styles.formGroup}>
               <label className={styles.label}>
-                Position <span className={styles.required}>*</span>
+                Position
               </label>
 
               <input
                 type="text"
-                name="position"
-                value={formData.position}
-                // onChange={handleChange}
+                value={selectedJob?.position || ""}
+                readOnly
                 className={styles.inputField}
               />
-            </div>
 
-            {/* PHONE */}
-            <div className={styles.formGroup}>
-              <label className={styles.label}>
-                Phone <span className={styles.required}>*</span>
-              </label>
-
-              <input
-                type="text"
-                name="phone"
-                placeholder="Phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className={styles.inputField}
-              />
             </div>
 
           </div>
 
           <br />
 
-          {/* DESCRIPTION */}
+          {/* COVER LETTER */}
+
           <div className={styles.formGroup}>
+
             <label className={styles.label}>
-              Description
-              <span className={styles.required}>*</span>
+              Cover Letter
             </label>
 
             <textarea
-              name="description"
-              placeholder="Enter full job description..."
-              value={formData.description}
+              name="cover_letter"
+              placeholder="Write something..."
+              value={formData.cover_letter}
               onChange={handleChange}
               className={styles.textArea}
-            ></textarea>
+            />
+
           </div>
 
           <br />
 
-          {/* FILE */}
-          <div className={styles.formGroup}>
-            <label className={styles.label}>
-              Upload Resume
-              <span className={styles.required}>*</span>
-            </label>
+          {/* RESUME */}
+         {/* RESUME */}
 
-            <input
-              type="file"
-              onChange={handleFileChange}
-              className={styles.inputField}
-            />
+<div className={styles.formGroup}>
 
-            <p>{formData.resume?.resume}</p>
-          </div>
+  <label className={styles.label}>
+    Upload Resume
+  </label>
 
+  {/* SHOW OLD RESUME */}
+
+  {users?.resume && (
+
+    <div className={styles.inputField}>
+
+      <p className={styles.resumeText}>
+        Resume already uploaded
+      </p>
+
+      <a
+        href={`http://127.0.0.1:8000${users.resume}`}
+        target="_blank"
+        rel="noreferrer"
+        className={styles.link}
+      >
+        View Resume
+      </a>
+
+      <p className={styles.smallText}>
+        Upload a new resume only if you want to replace the old one.
+      </p>
+
+    </div>
+  )}
+
+  <input
+    type="file"
+    onChange={handleFileChange}
+    className={styles.inputField}
+  />
+
+  <p className={styles.smallText}>
+    PDF, DOC, DOCX allowed. Max file size 5MB.
+  </p>
+
+</div>
           <div className={styles.footerContainer}>
+
             <div className={styles.buttonRow}>
 
               <button
@@ -365,29 +303,26 @@ async function handleSubmitForm(e) {
                 Close
               </button>
 
-              {/* {alreadyApplied ?  */}
-              
               <button
                 type="submit"
                 className={styles.submitBtn}
-                disabled
+                disabled={loading}
               >
-                Applied
+                {
+                  loading
+                    ? "Applying..."
+                    : "Apply Now"
+                }
               </button>
-              
-              <button
-                type="submit"
-                className={styles.submitBtn}
-              >
-                Apply Now
-              </button>
-              {/* } */}
 
             </div>
+
           </div>
 
         </form>
+
       </div>
+
     </div>
   );
 }

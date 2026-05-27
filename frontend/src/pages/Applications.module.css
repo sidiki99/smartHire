@@ -138,7 +138,8 @@ tbody td {
   width: 55px;
   height: 55px;
   border-radius: 18px;
-  background: linear-gradient(135deg, #8b5cf6, #d946ef);
+  /* background: linear-gradient(135deg, #8b5cf6, #d946ef); */
+  background-color: #8F1F04;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -175,4 +176,22 @@ tbody td {
   justify-content: center;
   align-items: center;
   color: white;
+}
+
+
+
+
+
+
+.deleteBtn {
+  background: red;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.deleteBtn:hover {
+  background: darkred;
 }
